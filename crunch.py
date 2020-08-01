@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import numpy as np
+
 import pandas as pd
-import matplotlib
+
 
 def populate_charge_discharge_values(
     file_path,
@@ -72,8 +72,7 @@ def populate_charge_discharge_values(
             print('BCAPACITY: '+str(df['BCAPACITY'][index]))
             print('lmp_threshold: '+str(lmp_threshold))
             print('charge_threshold: '+str(charge_threshold))
-        
-            
+
         if index == 0: #handles budget and action for first row (0)
             #set action for first row            
             if (
@@ -140,12 +139,12 @@ def populate_charge_discharge_values(
                 df['ACTION'][index] == 'DISCHARGE'
             ):
                 df['BBUDGET'][index] = last_budget
-                df['EBUDGET'][index] = last_budget  + max(df['LMP_PRC'][index],df['RU_CLR_PRC'][index]) * discharge_capacity
+                df['EBUDGET'][index] = last_budget + max(df['LMP_PRC'][index],df['RU_CLR_PRC'][index]) * discharge_capacity
             elif (
                 df['ACTION'][index] == 'CHARGE'
             ):
                 df['BBUDGET'][index] = last_budget
-                df['EBUDGET'][index] = last_budget - df['LMP_PRC'][index] * charge_capacity           
+                df['EBUDGET'][index] = last_budget - df['LMP_PRC'][index] * charge_capacity
             else:
                 df['BBUDGET'][index] = last_budget 
                 df['EBUDGET'][index] = df['BBUDGET'][index]

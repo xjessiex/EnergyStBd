@@ -6,7 +6,7 @@ import sys
 from xml.etree import ElementTree
 import csv
 
-directory = sys.argv[1]
+directory = os.getcwd()
 
 #for file_name in os.listdir(directory):
     #if file_name.endswith('.xml'):
