@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-import os, shutil
+import os
 import sys
 import csv
 import numpy as np
@@ -178,7 +178,7 @@ class EnergyBid:
         self.mergedf = pd.merge(lmpdf_f, asdf_f, on="START TIME")
 
 
-        print(f'we now have {self.mergedf.shape[0]} hours in the price dataframe!)
+        print(f'we now have {self.mergedf.shape[0]} hours in the price dataframe!')
 
 
     def inputbudget(self):
