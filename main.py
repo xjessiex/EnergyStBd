@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
-import os
+import os, shutil
 import sys
 import csv
 import numpy as np
 import pandas as pd
 # import matplotlib
+import time
 
 import requests # to send HTTP requests without the need to manually add query strings to your URLs, or to form-encode your POST data.
 from io import BytesIO # to create text or binary streams from different types of data.
 from zipfile import ZipFile
 from xml.etree import ElementTree
+from datetime import datetime, timedelta
 
 class EnergyBid:
     """
@@ -53,14 +55,42 @@ class EnergyBid:
 #%% download LMP and AS files and extract them from zip files
 
     def QueryAPI(self, query_name):
+        # delete files that contains "LMP_DAM_LMP", "PRC_AS_DAM"
+        for filename in os.listdir(self.datadir):
+            if query_name in filename:
+                os.remove(os.path.join(self.datadir, filename))
+        startdate_dt = datetime.strptime(self.startdate, '%Y%m%d')
+        enddate_dt = datetime.strptime(self.enddate, '%Y%m%d')
 
-        api_url=f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}&startdatetime={self.startdate}T07:00-0000&enddatetime={self.enddate}T07:00-0000&market_run_id=DAM&version=1'
-        response = requests.get(api_url) # HTTP GET request
-        zipfile = ZipFile(BytesIO(response.content))
-        output_url= self.datadir # Path specifies a different directory to extract to.
-        zipfile.extractall(output_url)
-        #Extract all members from the archive to the current working directory.
+        # check if input multiple days
+        if (enddate_dt - startdate_dt).days > 1:
+            # construct a moving start and end scrapping date
+            split_start_date_dt = startdate_dt
+            split_end_date_dt = startdate_dt + timedelta(days=1)
+            while (enddate_dt - split_end_date_dt).days > 0:
+                split_start_date_str = split_start_date_dt.strftime('%Y%m%d')
+                split_end_date_str = split_end_date_dt.strftime('%Y%m%d')
+                api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}&startdatetime={split_start_date_str}T07:00-0000&enddatetime={split_end_date_str}T07:00-0000&market_run_id=DAM&version=1'
+                print(f'pulling from API:{api_url}')
+                response = requests.get(api_url) # HTTP GET request
+                print(f'response:{response.content}')
+                zipfile = ZipFile(BytesIO(response.content))
+                output_url = self.datadir # Path specifies a different directory to extract to.
+                zipfile.extractall(output_url)
+                split_start_date_dt = split_start_date_dt + timedelta(days=1)
+                split_end_date_dt = split_end_date_dt + timedelta(days=1)
 
+                # take a 10sec break during scrapping to prevent throttle
+                time.sleep(10)
+                #Extract all members from the archive to the current working directory.
+
+        else:
+            api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}&startdatetime={self.startdate}T07:00-0000&enddatetime={self.enddate}T07:00-0000&market_run_id=DAM&version=1'
+            response = requests.get(api_url) # HTTP GET request
+            zipfile = ZipFile(BytesIO(response.content))
+            output_url = self.datadir # Path specifies a different directory to extract to.
+            zipfile.extractall(output_url)
+            #Extract all members from the archive to the current working directory.
     #Do we let customers pick?
     #QueryAPI('PRC_LMP')
     #QueryAPI('PRC_AS')
@@ -76,41 +106,51 @@ class EnergyBid:
     # corresponding data items: NS_CLR_PRC (NonSpin Cleared Price)
 
     def parsexml(self):
+        words = ["LMP_DAM_LMP", "PRC_AS_DAM"]
+
+        # set up empty compile csv with headers for LMP and AS prices
+        for i in words:
+            with open(i +'.csv', 'w') as r:
+                writer = csv.writer(r)
+                writer.writerow(
+                    ['RTO', 'MARKET TYPE', 'DATA ITEM', 'PRICE', 'LOCATION', 'START TIME',
+                     'END TIME'])  # WRITING HEADERS
+
+        # loop through each day of prices and append them in the compile csv
         for file_name in os.listdir(self.datadir):
-            words = ["LMP_DAM_LMP","PRC_AS_DAM"]
-            for i in words:
-                if i in file_name:
-                    self.file_index += 1
-                    full_file = os.path.join(self.datadir, file_name)
+            # create empty csv
+            if any(name in file_name for name in words):
+                self.file_index += 1
+                full_file = os.path.join(self.datadir, file_name)
 
-                    #print(full_file)
-                    tree = ElementTree.parse(full_file)
-                    root = tree.getroot()
-                    print(root.tag)
-                    target_filename = str(i) + '.csv'
+                #print(full_file)
+                tree = ElementTree.parse(full_file)
+                root = tree.getroot()
+                print(root.tag)
+                item = [name for name in words if name in file_name]
+                target_filename = str(item[0]) + '.csv'
 
-                    print('Processing file ' + str(self.file_index))
+                print('Processing file ' + str(self.file_index))
 
-                    with open(target_filename, 'w', newline='') as r:
-                        writer = csv.writer(r)
-                        writer.writerow(
-                            ['RTO', 'MARKET TYPE', 'DATA ITEM', 'PRICE', 'LOCATION', 'START TIME', 'END TIME'])  # WRITING HEADERS
+                with open(target_filename, 'a') as r:
+                    writer = csv.writer(r)
 
-                        for message in root.findall(self.ns + 'MessagePayload'):
-                            for rto in message.findall(self.ns + 'RTO'):
-                                name = rto.find(self.ns + 'name').text
-                                for item in rto.findall(self.ns + 'REPORT_ITEM'):
-                                    for header in item.findall(self.ns + 'REPORT_HEADER'):
-                                        mkt = header.find(self.ns + 'MKT_TYPE').text
-                                    for reportdata in item.findall(self.ns + 'REPORT_DATA'):
-                                        dataitem = reportdata.find(self.ns + 'DATA_ITEM').text
-                                        price = reportdata.find(self.ns + 'VALUE').text
-                                        resource = reportdata.find(self.ns + 'RESOURCE_NAME').text
-                                        starttime = reportdata.find(self.ns + 'INTERVAL_START_GMT').text
-                                        endtime = reportdata.find(self.ns + 'INTERVAL_END_GMT').text
-                                        writer.writerow([name, mkt, dataitem, price, resource, starttime, endtime])
+                    for message in root.findall(self.ns + 'MessagePayload'):
+                        for rto in message.findall(self.ns + 'RTO'):
+                            name = rto.find(self.ns + 'name').text
+                            for item in rto.findall(self.ns + 'REPORT_ITEM'):
+                                for header in item.findall(self.ns + 'REPORT_HEADER'):
+                                    mkt = header.find(self.ns + 'MKT_TYPE').text
+                                for reportdata in item.findall(self.ns + 'REPORT_DATA'):
+                                    dataitem = reportdata.find(self.ns + 'DATA_ITEM').text
+                                    price = reportdata.find(self.ns + 'VALUE').text
+                                    resource = reportdata.find(self.ns + 'RESOURCE_NAME').text
+                                    starttime = reportdata.find(self.ns + 'INTERVAL_START_GMT').text
+                                    endtime = reportdata.find(self.ns + 'INTERVAL_END_GMT').text
+                                    writer.writerow([name, mkt, dataitem, price, resource, starttime, endtime])
 
     def mergedf(self):
+        #merge pricing for AS and LMP
 
         # process LMP file
         lmpdf = pd.read_csv(os.path.join(self.dirpath, "LMP_DAM_LMP.csv"))
@@ -136,7 +176,9 @@ class EnergyBid:
         asdf_f = asdf_f.rename(columns={'SUM_PRC':'RU_CLR_PRC'})
 
         self.mergedf = pd.merge(lmpdf_f, asdf_f, on="START TIME")
-        print(self.mergedf)
+
+
+        print(f'we now have {self.mergedf.shape[0]} hours in the price dataframe!)
 
 
     def inputbudget(self):
