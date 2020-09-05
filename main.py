@@ -54,7 +54,7 @@ class EnergyBid:
 
 #%% download LMP and AS files and extract them from zip files
 
-    def QueryAPI(self, query_name):
+    def QueryAPI(self, query_name, query_all_nodes=False):
         # delete files that contains "LMP_DAM_LMP", "PRC_AS_DAM"
         for filename in os.listdir(self.datadir):
             if query_name in filename:
@@ -63,14 +63,19 @@ class EnergyBid:
         enddate_dt = datetime.strptime(self.enddate, '%Y%m%d')
 
         # check if input multiple days
-        if (enddate_dt - startdate_dt).days > 1:
+        if query_all_nodes == True:
             # construct a moving start and end scrapping date
             split_start_date_dt = startdate_dt
             split_end_date_dt = startdate_dt + timedelta(days=1)
             while (enddate_dt - split_end_date_dt).days > 0:
                 split_start_date_str = split_start_date_dt.strftime('%Y%m%d')
                 split_end_date_str = split_end_date_dt.strftime('%Y%m%d')
-                api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}&startdatetime={split_start_date_str}T07:00-0000&enddatetime={split_end_date_str}T07:00-0000&market_run_id=DAM&version=1'
+                api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}' \
+                    f'&startdatetime={split_start_date_str}T07:00-0000' \
+                    f'&enddatetime={split_end_date_str}T07:00-0000' \
+                    f'&node=TH_NP15_GEN-APND' \
+                    f'&market_run_id=DAM&version=1'
+
                 print(f'pulling from API:{api_url}')
                 response = requests.get(api_url) # HTTP GET request
                 print(f'response:{response.content}')
