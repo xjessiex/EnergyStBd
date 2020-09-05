@@ -73,7 +73,6 @@ class EnergyBid:
                 api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}' \
                     f'&startdatetime={split_start_date_str}T07:00-0000' \
                     f'&enddatetime={split_end_date_str}T07:00-0000' \
-                    f'&node=TH_NP15_GEN-APND' \
                     f'&market_run_id=DAM&version=1'
 
                 print(f'pulling from API:{api_url}')
@@ -90,7 +89,11 @@ class EnergyBid:
                 #Extract all members from the archive to the current working directory.
 
         else:
-            api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}&startdatetime={self.startdate}T07:00-0000&enddatetime={self.enddate}T07:00-0000&market_run_id=DAM&version=1'
+            api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}' \
+                f'&startdatetime={self.startdate}T07:00-0000' \
+                f'&enddatetime={self.enddate}T07:00-0000&market_run_id=DAM&version=1' \
+                f'&node=TH_NP15_GEN-APND' \
+                f'&market_run_id=DAM&version=1'
             response = requests.get(api_url) # HTTP GET request
             zipfile = ZipFile(BytesIO(response.content))
             output_url = self.datadir # Path specifies a different directory to extract to.

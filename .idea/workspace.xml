@@ -2,19 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38b96885-b8c9-4b5a-8e5f-38c44c5808dd" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/LMP_DAM_LMP.csv" beforeDir="false" afterPath="$PROJECT_DIR$/LMP_DAM_LMP.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PRC_AS_DAM.csv" beforeDir="false" afterPath="$PROJECT_DIR$/PRC_AS_DAM.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200701_20200702_PRC_AS_DAM_20200813_18_51_15_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200702_20200702_PRC_LMP_DAM_LMP_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200702_20200702_PRC_LMP_DAM_MCC_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200702_20200702_PRC_LMP_DAM_MCE_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200702_20200702_PRC_LMP_DAM_MCL_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200702_20200703_PRC_AS_DAM_20200813_18_51_25_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200703_20200703_PRC_LMP_DAM_LMP_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200703_20200703_PRC_LMP_DAM_MCC_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200703_20200703_PRC_LMP_DAM_MCE_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200703_20200703_PRC_LMP_DAM_MCL_v1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/20200703_20200704_PRC_AS_DAM_20200813_18_51_36_v1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-105">
-              <caret line="74" column="61" selection-start-line="74" selection-start-column="61" selection-end-line="74" selection-end-column="61" />
+            <state relative-caret-position="-221">
+              <caret line="74" column="69" selection-start-line="74" selection-start-column="69" selection-end-line="74" selection-end-column="69" />
               <folding>
                 <element signature="e#38#47#0" expanded="true" />
               </folding>
@@ -98,7 +85,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-273" />
     <option name="y" value="252" />
     <option name="width" value="3876" />
@@ -279,7 +266,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-91" y="84" width="1292" height="732" extended-state="0" />
+    <frame x="-6" y="-6" width="1292" height="732" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.43251532" visible="true" weight="0.2845787" />
       <window_info id="Structure" order="1" sideWeight="0.5674847" side_tool="true" weight="0.0397878" />
@@ -305,7 +293,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>222</line>
+          <line>225</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
@@ -441,8 +429,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="74" column="61" selection-start-line="74" selection-start-column="61" selection-end-line="74" selection-end-column="61" />
+        <state relative-caret-position="-221">
+          <caret line="74" column="69" selection-start-line="74" selection-start-column="69" selection-end-line="74" selection-end-column="69" />
           <folding>
             <element signature="e#38#47#0" expanded="true" />
           </folding>
