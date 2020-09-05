@@ -118,7 +118,7 @@ class EnergyBid:
 
         # set up empty compile csv with headers for LMP and AS prices
         for i in words:
-            with open(i +'.csv', 'w') as r:
+            with open(os.path.join('data', i, '.csv'), 'w') as r:
                 writer = csv.writer(r)
                 writer.writerow(
                     ['RTO', 'MARKET TYPE', 'DATA ITEM', 'PRICE', 'LOCATION', 'START TIME',
@@ -140,7 +140,7 @@ class EnergyBid:
 
                 print('Processing file ' + str(self.file_index))
 
-                with open(target_filename, 'a') as r:
+                with open(os.path.join('data', target_filename), 'a') as r:
                     writer = csv.writer(r)
 
                     for message in root.findall(self.ns + 'MessagePayload'):
@@ -161,7 +161,7 @@ class EnergyBid:
         #merge pricing for AS and LMP
 
         # process LMP file
-        lmpdf = pd.read_csv(os.path.join(self.dirpath, "LMP_DAM_LMP.csv"))
+        lmpdf = pd.read_csv(os.path.join(self.dirpath, 'data', 'LMP_DAM_LMP.csv'))
         # filter location
         lmpdf_f = lmpdf[lmpdf["LOCATION"] == "TH_NP15_GEN-APND"]
         lmpdf_f.drop(['DATA ITEM', "LOCATION"], axis=1)
@@ -169,7 +169,7 @@ class EnergyBid:
         lmpdf_f = lmpdf_f.rename(columns={'PRICE': 'LMP_PRC'})
 
         # process AS file
-        asdf = pd.read_csv(os.path.join(self.dirpath, "PRC_AS_DAM.csv"))
+        asdf = pd.read_csv(os.path.join(self.dirpath, 'data', 'PRC_AS_DAM.csv'))
         # filter price
         asdf = asdf[asdf["DATA ITEM"] == "RU_CLR_PRC"]
 
