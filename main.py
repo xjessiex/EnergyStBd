@@ -92,8 +92,7 @@ class EnergyBid:
             api_url =f'http://oasis.caiso.com/oasisapi/SingleZip?queryname={query_name}' \
                 f'&startdatetime={self.startdate}T07:00-0000' \
                 f'&enddatetime={self.enddate}T07:00-0000&market_run_id=DAM&version=1' \
-                f'&node=TH_NP15_GEN-APND' \
-                f'&market_run_id=DAM&version=1'
+                f'&node=TH_NP15_GEN-APND'
             response = requests.get(api_url) # HTTP GET request
             zipfile = ZipFile(BytesIO(response.content))
             output_url = self.datadir # Path specifies a different directory to extract to.
@@ -118,7 +117,7 @@ class EnergyBid:
 
         # set up empty compile csv with headers for LMP and AS prices
         for i in words:
-            with open(os.path.join('data', i, '.csv'), 'w') as r:
+            with open(os.path.join('data', i + '.csv'), 'w') as r:
                 writer = csv.writer(r)
                 writer.writerow(
                     ['RTO', 'MARKET TYPE', 'DATA ITEM', 'PRICE', 'LOCATION', 'START TIME',
