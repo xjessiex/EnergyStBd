@@ -1,6 +1,6 @@
 # Energy Bidding Optimizer
 
-#### Project Status: [In Progress]
+#### Project Status: [Discontinued]
 
 ## Project Intro
 Built on Miriam Makhyoun's scripts, we hope to scrap CAISO day-ahead-market (DAM) and ancillary service (AS) bidding price to optimize energy bidding and correspondingly recommend DAM or ancillary bidding for clients. The ultimate goal is to produce a web app or GUI app to help clients to use this tool.
